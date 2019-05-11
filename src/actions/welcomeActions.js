@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 export const ADD_WELCOME = 'ADD_WELCOME';
+export const ADD_WELCOME_FAIL = 'ADD_WELCOME_FAIL';
+export const ADD_WELCOME_SUCCESS = 'ADD_WELCOME_SUCCESS';
 export const GET_WELCOME = 'GET_WELCOME';
 export const GET_WELCOME_SUCCESS = 'GET_WELCOME_SUCCESS';
 export const GET_WELCOME_FAIL = 'GET_WELCOME_FAIL';
@@ -12,6 +14,18 @@ export const addWelcome = (author, content) => {
             author,
             content,
         },
+    };
+}
+
+export const addWelcomeSuccess = () => {
+    return {
+        type: ADD_WELCOME_SUCCESS,
+    }
+}
+
+export const addWelcomeFail = () => {
+    return {
+        type: ADD_WELCOME_FAIL,
     };
 }
 
@@ -37,11 +51,25 @@ export const getWelcomeFail = () => {
 export const getWelcomeAsync = () => {
     return (dispatch) => {
         dispatch(getWelcome());
-        return axios.get('https://jr-posts.herokuapp.com/v1/posts')
+        return axios.get('http://localhost:4000/v1/posts')
         .then(response=>{
             dispatch(getWelcomeSuccess(response.data));
         }, error => {
             dispatch(getWelcomeFail());
+        });
+    }
+}
+
+// Add welcome and then get welcome
+export const addWelcomeAsync = (author, content) => {
+    return (dispatch) => {
+        dispatch(addWelcome(author, content));
+        return axios.post('http://localhost:4000/v1/posts', {author, content})
+        .then(()=>{
+            dispatch(addWelcomeSuccess());
+            dispatch(getWelcomeAsync());
+        }, error => {
+            dispatch(addWelcomeFail());
         });
     }
 }

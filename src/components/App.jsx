@@ -7,10 +7,6 @@ import WelcomeForm from "./WelcomeForm";
 import { getWelcomeAsync } from '../actions/welcomeActions';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     this.props.dispatch(getWelcomeAsync());
   }
